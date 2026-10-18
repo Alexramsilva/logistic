@@ -881,3 +881,174 @@ st.caption(
     "El modelo asigna pedidos a vehículos y zonas; no calcula "
     "el orden secuencial de las paradas de cada ruta."
 )
+
+
+def mostrar_planteamiento_matematico():
+
+    with st.expander(
+        "📐 Planteamiento matemático del modelo",
+        expanded=False
+    ):
+
+        st.subheader("1. Pronóstico de demanda mediante una red neuronal MLP")
+
+        st.markdown(
+            "Sea $\\mathbf{x}_{zt}$ el vector de características "
+            "de la zona $z$ en el periodo $t$:"
+        )
+
+        st.latex(r"""
+        \mathbf{x}_{zt}=
+        \begin{bmatrix}
+        t\\
+        \sin(2\pi d_t/7)\\
+        \cos(2\pi d_t/7)\\
+        p_{zt}\\
+        I(z=1)\\
+        I(z=2)\\
+        I(z=3)\\
+        I(z=4)
+        \end{bmatrix}
+        \in\mathbb{R}^{8}
+        """)
+
+        st.markdown("**Propagación hacia adelante:**")
+
+        st.latex(r"""
+        \mathbf{h}^{(1)}
+        =\operatorname{ReLU}
+        (W^{(1)}\mathbf{x}_{zt}+\mathbf{b}^{(1)})
+        """)
+
+        st.latex(r"""
+        \mathbf{h}^{(2)}
+        =\operatorname{ReLU}
+        (W^{(2)}\mathbf{h}^{(1)}+\mathbf{b}^{(2)})
+        """)
+
+        st.latex(r"""
+        \widehat{D}_{zt}
+        =W^{(3)}\mathbf{h}^{(2)}+b^{(3)}
+        """)
+
+        st.markdown("**Función de pérdida:**")
+
+        st.latex(r"""
+        \mathcal{L}(\theta)=
+        \frac{1}{N}\sum_{i=1}^{N}
+        (D_i-\widehat{D}_i)^2
+        """)
+
+        st.markdown(
+            "La red neuronal estima la demanda de cada zona. "
+            "Para la optimización se utiliza una demanda no negativa "
+            "y entera:"
+        )
+
+        st.latex(r"""
+        D_z=\max\left\{0,
+        \left\lceil\widehat{D}_{z,t+1}\right\rceil\right\}
+        """)
+
+        st.divider()
+
+        st.subheader("2. Optimización logística mediante programación lineal entera mixta")
+
+        st.markdown("**Conjuntos:**")
+
+        st.latex(r"""
+        v\in V:\text{ vehículos},\qquad
+        z\in Z:\text{ zonas de reparto}
+        """)
+
+        st.markdown("**Variables de decisión:**")
+
+        st.latex(r"""
+        x_{vz}=\text{ pedidos asignados al vehículo }v
+        \text{ en la zona }z
+        """)
+
+        st.latex(r"""
+        y_{vz}\in\{0,1\},\qquad
+        a_v\in\{0,1\},\qquad
+        u_z\geq 0
+        """)
+
+        st.markdown("**Función objetivo:**")
+
+        st.latex(r"""
+        \min Z=
+        \sum_{v\in V}\sum_{z\in Z}c_{vz}x_{vz}
+        +\sum_{v\in V}\sum_{z\in Z}f_{vz}y_{vz}
+        +\rho\sum_{z\in Z}u_z
+        """)
+
+        st.markdown("**Restricciones de capacidad:**")
+
+        st.latex(r"""
+        \sum_{z\in Z}x_{vz}\leq Q_v a_v
+        \qquad \forall v\in V
+        """)
+
+        st.markdown("**Activación de visitas:**")
+
+        st.latex(r"""
+        x_{vz}\leq D_z y_{vz}
+        \qquad \forall v\in V,\ z\in Z
+        """)
+
+        st.latex(r"""
+        y_{vz}\leq a_v
+        \qquad \forall v\in V,\ z\in Z
+        """)
+
+        st.markdown("**Satisfacción de la demanda:**")
+
+        st.latex(r"""
+        \sum_{v\in V}x_{vz}+u_z=D_z
+        \qquad \forall z\in Z
+        """)
+
+        st.latex(r"""
+        x_{vz},u_z\in\mathbb{Z}_{\geq0},
+        \qquad y_{vz},a_v\in\{0,1\}
+        """)
+
+        st.divider()
+
+        st.subheader("3. Indicador de nivel de servicio")
+
+        st.latex(r"""
+        NS=
+        100\left(
+        \frac{\sum_{z\in Z}D_z-\sum_{z\in Z}u_z}
+        {\sum_{z\in Z}D_z}
+        \right)\%
+        """)
+
+        st.markdown(
+            "El nivel de servicio mide el porcentaje de pedidos "
+            "pronosticados que se atienden. Si la demanda total es cero, "
+            "el indicador debe definirse por separado."
+        )
+
+        st.divider()
+
+        st.subheader("4. Evaluación de escenarios")
+
+        st.latex(r"""
+        Z_s^*=
+        \min_{\mathbf{x},\mathbf{y},\mathbf{a},\mathbf{u}}
+        Z\left(D^{(s)},c^{(s)},Q^{(s)}\right)
+        """)
+
+        st.markdown(
+            "El modelo se resuelve para cada escenario $s$: operación "
+            "normal, demanda alta, congestión severa, flota reducida "
+            "y disrupción severa. Así se comparan los costos óptimos "
+            "y los niveles de servicio."
+        )
+
+
+# Llamar a la función en la sección correspondiente de la aplicación:
+mostrar_planteamiento_matematico()
