@@ -51,7 +51,7 @@ st.caption(
 )
 
 ZONAS = ["Centro", "Norte", "Sur", "Poniente"]
-VEHICULOS = ["Van 1", "Van 2", "Van 3", "Van 4"]
+VEHICULOS = ["Camioneta 1", "Camioneta 2", "Camioneta 3", "Camioneta 4"]
 
 # Distancias ilustrativas de ida desde el centro logístico (km).
 DISTANCIAS = np.array([4.0, 7.0, 9.0, 12.0])
