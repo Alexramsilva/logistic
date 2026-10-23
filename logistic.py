@@ -44,7 +44,7 @@ div[data-testid="stMetric"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.title("Logistics Intelligence Lab | LCFI-UNRC")
+st.title("Chayito: Logistics Intelligence Lab | LCFI-UNRC")
 st.caption(
     "Investigación de Operaciones | Redes neuronales MLP + PuLP "
     "| Distribución urbana y última milla"
