@@ -58,7 +58,7 @@ with st.sidebar.expander("Parámetros de zonas y vehículos", expanded=True):
     for i, zona in enumerate(ZONAS):
         distancias_usuario.append(
             st.number_input(
-                f"Distancia a {zona} (km)",
+                f"Distancia a {zona} (miles de kms)",
                 min_value=0.1,
                 value=[4.0, 7.0, 9.0, 12.0][i],
                 step=0.5,
