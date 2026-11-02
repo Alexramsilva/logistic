@@ -34,7 +34,9 @@ div[data-testid="stMetric"] {
 }
 </style>
 """, unsafe_allow_html=True)
-
+st.image("UNRC.svg", caption="Universidad Nacional Rosario Castellanos", width=300)
+#####
+st.title("Licenciatura en Contaduría y Finanzas UNRC")
 st.title("Chayito: Logistics Intelligence Lab | LCFI-UNRC")
 st.caption(
     "Investigación de Operaciones | Redes neuronales MLP + PuLP "
